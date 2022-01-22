@@ -40,22 +40,18 @@ def DownloadMP3(videoURL):
     print('Executing...')
 
     try:
-        ydl_opts = {
-            'format': 'bestaudio/best',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'wav',
-                'preferredquality': '192'
-            }],
-            'postprocessor_args': [
-                '-ar', '16000'
-            ],
-            'prefer_ffmpeg': True,
-            'keepvideo': True
+        video_info = youtube_dl.YoutubeDL().extract_info(
+            url = videoURL,download=False
+        )
+        filename = f"DownloadedFiles\{video_info['title']}.mp3"
+        options={
+            'format':'bestaudio/best',
+            'keepvideo':False,
+            'outtmpl':filename,
         }
 
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([videoURL])
+        with youtube_dl.YoutubeDL(options) as ydl:
+            ydl.download([video_info['webpage_url']])
     except:
         print('Some error in downloading: ', videoURL)
 
