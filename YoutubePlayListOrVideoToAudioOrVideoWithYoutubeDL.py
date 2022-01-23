@@ -58,7 +58,7 @@ def DownloadMP3(videoURL):
     return videoURL
 
 
-def DownloadMP4(video, high_resol = False):
+def DownloadMP4(videoURL, high_resol = False):
     """
     Dado un video de Youtube, me descarga el vídeo como MP4 y me retorna el nombre del archivo MP4 y sus fps
     """
@@ -66,19 +66,27 @@ def DownloadMP4(video, high_resol = False):
     print('Executing...')
 
     try:
-        if (high_resol): extension = video.streams.filter(adaptive=True, file_extension='mp4').order_by('resolution').desc().first()
-        else: extension = video.streams.get_highest_resolution()
+        video_info = youtube_dl.YoutubeDL().extract_info(
+            url = videoURL,download=False
+        )
+        filename = f"DownloadedFiles\{video_info['title']}.mp4"
+        options={
+            'format':'bestvideo+bestaudio[ext=m4a]/bestvideo+bestaudio/best',
+            'merge-output-format' : 'mp4',
+            'keepvideo':False,
+            'outtmpl':filename,
+            'postprocessors': [{
+                'key': 'FFmpegVideoConvertor',
+                'preferedformat': 'mp4'
+            }]
+        }
 
-        out_file = extension.download(output_path="./DownloadedFiles")
-
-        # printing the links downloaded
-        print("\n")
-        print(video.title)
-        print("Downloaded: ", video.watch_url)
+        with youtube_dl.YoutubeDL(options) as ydl:
+            ydl.download([video_info['webpage_url']])
     except:
-        print('Some error in downloading: ', video.watch_url)
+        print('Some error in downloading: ', videoURL)
 
-    return out_file, extension.fps
+    return videoURL
 
 
 #High resolution aún en fase de pruebas
