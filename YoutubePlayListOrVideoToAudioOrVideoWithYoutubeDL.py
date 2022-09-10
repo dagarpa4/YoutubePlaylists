@@ -43,7 +43,8 @@ def DownloadMP3(videoURL):
         video_info = youtube_dl.YoutubeDL().extract_info(
             url = videoURL,download=False
         )
-        filename = f"DownloadedFiles\{video_info['title']}.mp3"
+        txt = video_info['title'].replace("/","")
+        filename = f"DownloadedFiles\{txt}.mp3"
         options={
             'format':'bestaudio/best',
             'keepvideo':False,
@@ -144,8 +145,14 @@ def PlayListDownload(video_url, finish = False):
     list = SelectDownload()
     if (list != []):
         try:
+            n = len(p.video_urls)
+            i = 0
             for url in p.video_urls:
                 print(url)
+
+                i = i + 1
+                print(i, "video of", n, "videos")
+                
                 list[0](url)
 
         except:
