@@ -185,7 +185,7 @@ def downloadVideoProcess(video, downloadFolder):
     
     subprocess.run([
         "yt-dlp",
-        "-f", "bestaudio",
+        "-f", "bestaudio/best",
         "-x",
         "--audio-format", "mp3",
         "--audio-quality", "0",
